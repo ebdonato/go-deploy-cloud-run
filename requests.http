@@ -1,0 +1,18 @@
+@OPEN_WEATHER_API_KEY={{$dotenv OPEN_WEATHER_API_KEY}}
+@PORT={{$dotenv PORT}}
+@CEP=13330350
+
+###
+# @name CallServer
+GET http://localhost:{{PORT}}/{{CEP}}
+
+###
+# @name RequestCEP
+GET https://viacep.com.br/ws/{{CEP}}/json
+
+@localidade={{RequestCEP.response.body.localidade}}
+@uf={{RequestCEP.response.body.uf}}
+
+###
+# @name RequestWeather
+GET https://api.openweathermap.org/data/2.5/weather?q={{localidade}},{{uf}},br&units=metric&appid={{OPEN_WEATHER_API_KEY}}
