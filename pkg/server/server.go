@@ -54,7 +54,7 @@ func handlerCEP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var openWeather weather.Weather = weather.InstanceOpenWeather()
+	var openWeather weather.Weather = weather.InstanceWeatherApi()
 
 	temperature, err := openWeather.GetTemperature(location)
 	if err != nil {

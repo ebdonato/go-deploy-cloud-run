@@ -38,4 +38,4 @@ Deploy realizado no Google Cloud Run (free tier) e endereço ativo para ser aces
 Para executar a aplicação é necessário definir duas variáveis de ambiente:
 
 - PORT = Porta que a aplicação ficará escutando
-- OPEN_WEATHER_API_KEY = API key da [openweathermap](https://home.openweathermap.org/)
+- WEATHER_API_KEY = API key da [WeatherApi](https://www.weatherapi.com/)
