@@ -51,7 +51,7 @@ type weatherApiResponse struct {
 	} `json:"current"`
 }
 
-const weather_api_url = "http://api.weatherapi.com/v1/current.json?q=%s,{{uf}}&key=%s"
+const weather_api_url = "http://api.weatherapi.com/v1/current.json?q=%s&key=%s"
 
 type WeatherApi struct{}
 
