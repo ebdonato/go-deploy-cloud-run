@@ -29,8 +29,23 @@ func IsDigit(s string) bool {
 func GetEnvVariable(key string) string {
 	err := godotenv.Load(".env")
 
-	if err != nil {
+	if err == nil {
 		log.Println("Error loading .env file")
+		return os.Getenv(key)
+	}
+
+	err = godotenv.Load("../.env")
+
+	if err == nil {
+		log.Println("Error loading ../.env file")
+		return os.Getenv(key)
+	}
+
+	err = godotenv.Load("../../.env")
+
+	if err == nil {
+		log.Println("Error loading ../../.env file")
+		return os.Getenv(key)
 	}
 
 	return os.Getenv(key)
