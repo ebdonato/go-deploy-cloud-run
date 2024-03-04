@@ -3,6 +3,7 @@ package weather
 import (
 	"testing"
 
+	"github.com/ebdonato/go-deploy-cloud-run/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
@@ -13,7 +14,8 @@ type weatherApiSuite struct {
 }
 
 func (suite *weatherApiSuite) SetupSuite() {
-	suite.weatherApi = *InstanceWeatherApi()
+	apiKey := util.GetEnvVariable("WEATHER_API_KEY")
+	suite.weatherApi = *InstanceWeatherApi(apiKey)
 }
 
 func (suite *weatherApiSuite) TestGetLocationInfo() {

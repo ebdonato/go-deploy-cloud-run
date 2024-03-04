@@ -5,14 +5,20 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/ebdonato/go-deploy-cloud-run/pkg/cep"
 	"github.com/ebdonato/go-deploy-cloud-run/pkg/server"
+	"github.com/ebdonato/go-deploy-cloud-run/pkg/weather"
 	"github.com/ebdonato/go-deploy-cloud-run/util"
 )
 
 func main() {
-	r := server.NewWebServer()
-
 	port := util.GetEnvVariable("PORT")
+	apiKey := util.GetEnvVariable("WEATHER_API_KEY")
+
+	weatherApi := weather.InstanceWeatherApi(apiKey)
+	viaCep := cep.InstanceViaCep()
+
+	r := server.NewWebServer(weatherApi, viaCep)
 
 	log.Println("Starting web server on port", port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), r))

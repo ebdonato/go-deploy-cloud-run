@@ -6,6 +6,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/ebdonato/go-deploy-cloud-run/pkg/cep"
+	"github.com/ebdonato/go-deploy-cloud-run/pkg/weather"
+	"github.com/ebdonato/go-deploy-cloud-run/util"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
@@ -16,7 +19,12 @@ type webServerSuite struct {
 }
 
 func (suite *webServerSuite) SetupSuite() {
-	r := NewWebServer()
+	apiKey := util.GetEnvVariable("WEATHER_API_KEY")
+
+	weatherApi := weather.InstanceWeatherApi(apiKey)
+	viaCep := cep.InstanceViaCep()
+
+	r := NewWebServer(weatherApi, viaCep)
 
 	suite.router = r
 }

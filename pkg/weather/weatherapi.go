@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-
-	util "github.com/ebdonato/go-deploy-cloud-run/util"
 )
 
 type weatherApiResponse struct {
@@ -53,14 +51,18 @@ type weatherApiResponse struct {
 
 const weather_api_url = "http://api.weatherapi.com/v1/current.json?q=%s&key=%s"
 
-type WeatherApi struct{}
+type WeatherApi struct {
+	apiKey string
+}
 
-func InstanceWeatherApi() *WeatherApi {
-	return &WeatherApi{}
+func InstanceWeatherApi(apiKey string) *WeatherApi {
+	return &WeatherApi{
+		apiKey: apiKey,
+	}
 }
 
 func (o *WeatherApi) GetTemperature(location string) (Temperature, error) {
-	url := fmt.Sprintf(weather_api_url, location, util.GetEnvVariable("WEATHER_API_KEY"))
+	url := fmt.Sprintf(weather_api_url, location, o.apiKey)
 
 	req, err := http.Get(url)
 	if err != nil {

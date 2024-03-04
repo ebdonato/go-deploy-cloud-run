@@ -12,10 +12,10 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func NewWebServer() *chi.Mux {
+func NewWebServer(weather weather.Weather, cep cep.CEP) *chi.Mux {
 	r := chi.NewRouter()
 	r.Get("/", handlerHealth)
-	r.Get("/{cep}", handlerCEP)
+	r.Get("/{cep}", handlerCEP(weather, cep))
 
 	return r
 }
@@ -31,47 +31,45 @@ func handlerHealth(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Server is running"))
 }
 
-func handlerCEP(w http.ResponseWriter, r *http.Request) {
-	cepParams := strings.TrimSpace(r.URL.Path[1:])
+func handlerCEP(weather weather.Weather, cep cep.CEP) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		cepParams := strings.TrimSpace(r.URL.Path[1:])
 
-	if !util.IsValidCEP(cepParams) {
-		message := "Invalid CEP"
-		log.Println(message)
-		w.WriteHeader(http.StatusUnprocessableEntity)
-		w.Write([]byte(message))
-		return
-	}
+		if !util.IsValidCEP(cepParams) {
+			message := "Invalid CEP"
+			log.Println(message)
+			w.WriteHeader(http.StatusUnprocessableEntity)
+			w.Write([]byte(message))
+			return
+		}
 
-	var viaCep cep.CEP = cep.InstanceViaCep()
+		location, err := cep.FindLocation(cepParams)
+		if err != nil {
+			message := "CEP not Found"
+			log.Println(message)
+			log.Println(err)
+			w.WriteHeader(http.StatusNotFound)
+			w.Write([]byte(message))
+			return
+		}
 
-	location, err := viaCep.FindLocation(cepParams)
-	if err != nil {
-		message := "CEP not Found"
-		log.Println(message)
-		log.Println(err)
-		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte(message))
-		return
-	}
+		temperature, err := weather.GetTemperature(location)
+		if err != nil {
+			message := "Internal Server Error"
+			log.Println(message)
+			log.Println(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte(message))
+			return
+		}
 
-	var openWeather weather.Weather = weather.InstanceWeatherApi()
+		response := CEPResponse{
+			TempC: temperature.Celsius,
+			TempF: temperature.Fahrenheit,
+			TempK: temperature.Kelvin,
+		}
 
-	temperature, err := openWeather.GetTemperature(location)
-	if err != nil {
-		message := "Internal Server Error"
-		log.Println(message)
-		log.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(message))
-		return
-	}
-
-	response := CEPResponse{
-		TempC: temperature.Celsius,
-		TempF: temperature.Fahrenheit,
-		TempK: temperature.Kelvin,
-	}
-
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(response)
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(response)
+	})
 }
