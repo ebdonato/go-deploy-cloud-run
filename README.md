@@ -37,5 +37,13 @@ Deploy realizado no Google Cloud Run (free tier) e endereço ativo para ser aces
 
 Para executar a aplicação é necessário definir duas variáveis de ambiente:
 
-- PORT = Porta que a aplicação ficará escutando
-- WEATHER_API_KEY = API key da [WeatherApi](https://www.weatherapi.com/)
+- PORT = Porta que a aplicação ficará escutando, por padrão 8080
+- WEATHER_API_KEY = API key da [WeatherApi](https://www.weatherapi.com/), por padrão vazio (a aplicação não irá rodar nesse caso)
+
+Quando a aplicação estiver funcionando, a URL deverá ser: <https://some.domain.com/:cep> onde `:cep` é o CEP que deseja consultar, por exemplo <http://localhost:8080/13330550>
+
+## Demo
+
+[Google Cloud Run](https://go-deploy-cloud-run-aq77y6vyaq-uc.a.run.app)
+
+Por exemplo: <https://go-deploy-cloud-run-aq77y6vyaq-uc.a.run.app/13330550>
