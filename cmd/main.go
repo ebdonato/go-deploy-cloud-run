@@ -15,6 +15,15 @@ func main() {
 	port := util.GetEnvVariable("PORT")
 	apiKey := util.GetEnvVariable("WEATHER_API_KEY")
 
+	if port == "" {
+		log.Println("Missing environment variable PORT, falling back to 8080")
+		port = "8080"
+	}
+
+	if apiKey == "" {
+		log.Fatal("Missing environment variable WEATHER_API_KEY, there is no fall back")
+	}
+
 	weatherApi := weather.InstanceWeatherApi(apiKey)
 	viaCep := cep.InstanceViaCep()
 
