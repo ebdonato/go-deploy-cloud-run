@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 )
 
 type openWeatherResponse struct {
@@ -64,8 +65,9 @@ func InstanceOpenWeather(apiKey string) *OpenWeather {
 
 func (o *OpenWeather) GetTemperature(location string) (Temperature, error) {
 	url := fmt.Sprintf(weather_url, location, o.apiKey)
+	urlWithNoSpaces := strings.ReplaceAll(url, " ", "%20")
 
-	req, err := http.Get(url)
+	req, err := http.Get(urlWithNoSpaces)
 	if err != nil {
 		return Temperature{}, fmt.Errorf("FAILED TO REQUEST WEATHER API: %v", err)
 	}

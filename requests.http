@@ -2,7 +2,13 @@
 @WEATHER_API_KEY={{$dotenv WEATHER_API_KEY}}
 
 @PORT={{$dotenv PORT}}
-@CEP=13330350
+# valid
+# @CEP=29304560
+# invalid format
+# @CEP=2930456a
+# not exist
+@CEP=00000000
+
 
 ###
 # @name CallServer

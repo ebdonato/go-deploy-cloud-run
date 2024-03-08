@@ -23,6 +23,10 @@ func (suite *weatherApiSuite) TestGetLocationInfo() {
 	_, err := suite.weatherApi.GetTemperature(location)
 	assert.NoError(suite.T(), err)
 
+	location = "Cachoeiro de Itapemirim,ES"
+	_, err = suite.weatherApi.GetTemperature(location)
+	assert.NoError(suite.T(), err)
+
 	location = "X"
 	_, err = suite.weatherApi.GetTemperature(location)
 	assert.Error(suite.T(), err)
